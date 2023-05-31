@@ -115,6 +115,11 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
      * @param initMethodName initMethodName
      */
     void setInitMethodName(String initMethodName);
+
+    /**
+     * 获取初始化方法的名称
+     * @return 初始化方法的名称
+     */
     String getInitMethodName();
 
     /**
