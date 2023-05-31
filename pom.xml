@@ -1,0 +1,107 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.wb.springframework</groupId>
+  <artifactId>mini-spring-framework</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <modules>
+    <module>core</module>
+    <module>context</module>
+    <module>beans</module>
+    <module>context-support</module>
+    <module>context-indexer</module>
+    <module>jdbc</module>
+    <module>jms</module>
+    <module>jcl</module>
+    <module>expression</module>
+    <module>messaging</module>
+    <module>tx</module>
+    <module>orm</module>
+    <module>test</module>
+      <module>retry</module>
+  </modules>
+  <packaging>pom</packaging>
+
+  <name>mini-spring-framework</name>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <spring.framework.version>1.0-SNAPSHOT</spring.framework.version>
+    <junit.version>4.8.2</junit.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.wb.springframework</groupId>
+        <artifactId>beans</artifactId>
+        <version>${spring.framework.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.wb.springframework</groupId>
+        <artifactId>context</artifactId>
+        <version>${spring.framework.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.wb.springframework</groupId>
+        <artifactId>context-indexer</artifactId>
+        <version>${spring.framework.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.wb.springframework</groupId>
+        <artifactId>context-support</artifactId>
+        <version>${spring.framework.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.wb.springframework</groupId>
+        <artifactId>core</artifactId>
+        <version>${spring.framework.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.wb.springframework</groupId>
+        <artifactId>expression</artifactId>
+        <version>${spring.framework.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.wb.springframework</groupId>
+        <artifactId>jcl</artifactId>
+        <version>${spring.framework.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.wb.springframework</groupId>
+        <artifactId>jdbc</artifactId>
+        <version>${spring.framework.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.wb.springframework</groupId>
+        <artifactId>jms</artifactId>
+        <version>${spring.framework.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.wb.springframework</groupId>
+        <artifactId>messaging</artifactId>
+        <version>${spring.framework.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.wb.springframework</groupId>
+        <artifactId>orm</artifactId>
+        <version>${spring.framework.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.wb.springframework</groupId>
+        <artifactId>tx</artifactId>
+        <version>${spring.framework.version}</version>
+      </dependency>
+
+
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit.version}</version>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+</project>
