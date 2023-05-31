@@ -127,6 +127,11 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
      * @param destroyMethodName destroyMethodName
      */
     void setDestroyMethodName(String destroyMethodName);
+
+    /**
+     * 获取bean的销毁方法名称
+     * @return 销毁方法名称
+     */
     String getDestroyMethodName();
 
     /**
@@ -134,6 +139,10 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
      * @param role bean定义的角色
      */
     void setRole(int role);
+
+    /**
+     * 获取bean的角色
+     */
     int getRole();
 
 
