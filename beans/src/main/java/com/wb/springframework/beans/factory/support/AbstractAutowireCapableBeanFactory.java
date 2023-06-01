@@ -115,8 +115,21 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
                 String propertyName = pv.getName();
                 Object originalValue = pv.getValue();
                 Object resolvedValue = valueResolver.resolveValueIfNecessary(pv, originalValue);
-
+                if (resolvedValue == originalValue) {
+                    deepCopy.add(pv);
+                } else {
+                    resolveNecessary = true;
+                    deepCopy.add(new PropertyValue(pv, resolvedValue));
+                }
             }
+        }
+        if (mpvs != null && !resolveNecessary) {
+            mpvs.setConverted();
+        }
+        try {
+            bw.setPropertyValues(new MutablePropertyValues(deepCopy));
+        } catch (BeansException ex) {
+            throw new BeanCreationException("Bean named '" + beanName + "' setting property values error.", ex);
         }
     }
 

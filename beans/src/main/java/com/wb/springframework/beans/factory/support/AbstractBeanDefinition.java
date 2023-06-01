@@ -21,6 +21,8 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 
     private Supplier<?> instanceSupplier;
 
+    private MutablePropertyValues propertyValues;
+
     private boolean synthetic = false;
 
     private boolean abstractFlag = false;
@@ -175,7 +177,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 
     @Override
     public boolean hasPropertyValues() {
-        return BeanDefinition.super.hasPropertyValues();
+        return this.propertyValues != null && !this.propertyValues.isEmpty();
     }
 
     @Override

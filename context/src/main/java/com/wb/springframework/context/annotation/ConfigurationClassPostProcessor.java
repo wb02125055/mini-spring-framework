@@ -19,7 +19,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
-
+        System.out.println("postProcessBeanDefinitionRegistry...");
     }
 
     @Override

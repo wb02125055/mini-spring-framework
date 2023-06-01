@@ -25,4 +25,9 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
     public final Class<?> getWrappedClass() {
         return getWrappedInstance().getClass();
     }
+
+    @Override
+    public void setPropertyValue(String propertyName, Object propertyValue) throws BeansException {
+        // TODO setPropertyValue
+    }
 }
