@@ -11,6 +11,8 @@ import com.wb.springframework.core.AliasRegistry;
  */
 public interface BeanDefinitionRegistry extends AliasRegistry {
 
+    String[] getBeanDefinitionNames();
+
     void registerBeanDefinition(String beanName, BeanDefinition beanDefinition) throws BeanDefinitionStoreException;
 
     BeanDefinition getBeanDefinition(String beanName) throws NoSuchBeanDefinitionException;

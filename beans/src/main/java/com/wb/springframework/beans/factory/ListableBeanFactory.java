@@ -7,5 +7,7 @@ package com.wb.springframework.beans.factory;
 public interface ListableBeanFactory extends BeanFactory {
     boolean containsBeanDefinition(String beanName);
 
+    String[] getBeanDefinitionNames();
+
     String[] getBeanNamesForType(Class<?> type, boolean includeNonSingletons, boolean allowEagerInit);
 }

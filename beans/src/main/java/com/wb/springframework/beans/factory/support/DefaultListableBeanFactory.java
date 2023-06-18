@@ -26,6 +26,8 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
     private volatile Set<String> manualSingletonNames = new LinkedHashSet<>(16);
 
+    private volatile String[] frozenBeanDefinitionNames;
+
     private Comparator<Object> dependencyComparator;
 
     @Override
@@ -41,6 +43,15 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
             throw new NoSuchBeanDefinitionException(beanName);
         }
         return beanDefinition;
+    }
+
+    @Override
+    public String[] getBeanDefinitionNames() {
+        String[] frozenNames = this.frozenBeanDefinitionNames;
+        if (frozenNames != null) {
+            return frozenNames.clone();
+        }
+        return StringUtils.toStringArray(this.beanDefinitionNames);
     }
 
     @Override

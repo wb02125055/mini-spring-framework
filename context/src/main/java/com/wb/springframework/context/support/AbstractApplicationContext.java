@@ -129,6 +129,11 @@ public abstract class AbstractApplicationContext implements ConfigurableApplicat
         return getBeanFactory().getBeanNamesForType(type, includeNonSingletons, allowEagerInit);
     }
 
+    @Override
+    public String[] getBeanDefinitionNames() {
+        return getBeanFactory().getBeanDefinitionNames();
+    }
+
     public List<BeanFactoryPostProcessor> getBeanFactoryPostProcessors() {
         return beanFactoryPostProcessors;
     }

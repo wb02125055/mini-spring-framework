@@ -3,11 +3,13 @@ package com.wb.springframework.beans.factory.support;
 import com.wb.springframework.beans.*;
 import com.wb.springframework.beans.factory.*;
 import com.wb.springframework.beans.factory.config.*;
+import com.wb.springframework.core.NamedThreadLocal;
 import com.wb.springframework.core.ResolvableType;
 import com.wb.springframework.util.ClassUtils;
 import com.wb.springframework.util.ObjectUtils;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,6 +27,9 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
     private final Map<String, Scope> scopes = new ConcurrentHashMap<>(8);
 
     private final Set<String> alreadyCreated = Collections.newSetFromMap(new ConcurrentHashMap<>(256));
+
+    private final ThreadLocal<Object> prototypesCurrentlyInCreation =
+            new NamedThreadLocal<>("Prototype beans currently in creation");
 
     private ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
 
@@ -331,6 +336,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
         }
     }
 
+    @SuppressWarnings("unchecked")
     protected <T> T doGetBean(final String name, final Class<T> requiredType,
                               final Object[] args, boolean typeCheckOnly) throws BeansException {
         final String beanName = transformedBeanName(name);
@@ -356,13 +362,74 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
                         }
                     });
                     bean = getObjectForBeanInstance(sharedInstance, name, beanName, mbd);
+                } else if (mbd.isPrototype()) {
+                    // 如果bean定义是多实例的
+                    bean = getObjectForBeanInstance(sharedInstance, name, beanName, mbd);
+                } else {
+                    // 获取scope的名称
+                    String scopeName = mbd.getScope();
+                    // 获取scope
+                    final Scope scope = this.scopes.get(scopeName);
+                    if (scope == null) {
+                        throw new IllegalStateException("No Scope registered for scope name '" + scopeName + "'");
+                    }
+                    try {
+                        // 根据指定的scope来创建bean实例
+                        Object scopedInstance = scope.get(beanName, () -> {
+                            // 在初始化之前进行一一些准备工作，将bean的名称添加到prototypeCurrentlyInCreation
+                            beforePrototypeCreation(beanName);
+                            try {
+                                // 创建bean实例
+                                return createBean(beanName, mbd, args);
+                            } finally {
+                                // 从prototypeCurrentlyInCreation中移除
+                                afterPrototypeCreation(beanName);
+                            }
+                        });
+                        bean = getObjectForBeanInstance(scopedInstance, name, beanName, mbd);
+                    } catch (IllegalStateException ex) {
+                        throw new BeanCreationException("Scope '" + scopeName
+                                + "' is not active for the current thread; consider defining a scoped proxy for this bean"
+                                + " if you intend to refer to it from a singleton",
+                                ex);
+                    }
                 }
-                return null;
             } catch (Exception e) {
                 throw e;
             }
         }
         return (T) bean;
+    }
+
+
+    @SuppressWarnings("unchecked")
+    protected void afterPrototypeCreation(String beanName) {
+        Object curValue = this.prototypesCurrentlyInCreation.get();
+        if (curValue instanceof String) {
+            this.prototypesCurrentlyInCreation.remove();
+        } else if (curValue instanceof Set) {
+            Set<String> beanNameSet = (Set<String>) curValue;
+            beanNameSet.remove(beanName);
+            if (beanNameSet.isEmpty()) {
+                this.prototypesCurrentlyInCreation.remove();
+            }
+        }
+    }
+    @SuppressWarnings("unchecked")
+    protected void beforePrototypeCreation(String beanName) {
+        Object curValue = this.prototypesCurrentlyInCreation.get();
+        if (curValue == null) {
+            // 如果当前bean没有在创建，则将当前要创建的bean的名称设置到线程本地变量中
+            this.prototypesCurrentlyInCreation.set(beanName);
+        } else if (curValue instanceof String) {
+            Set<String> beanNameSet = new HashSet<>(2);
+            beanNameSet.add((String) curValue);
+            beanNameSet.add(beanName);
+            this.prototypesCurrentlyInCreation.set(beanNameSet);
+        } else {
+            Set<String> beanNameSet = (Set<String>) curValue;
+            beanNameSet.add(beanName);
+        }
     }
 
     protected void checkMergedBeanDefinition(RootBeanDefinition mbd, String beanName, Object[] args)
