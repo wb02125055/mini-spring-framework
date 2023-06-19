@@ -8,6 +8,10 @@ import com.wb.springframework.beans.factory.support.BeanDefinitionRegistry;
 import com.wb.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
 import com.wb.springframework.core.Ordered;
 import com.wb.springframework.core.PriorityOrdered;
+import com.wb.springframework.core.env.Environment;
+import com.wb.springframework.core.env.StandardEnvironment;
+import com.wb.springframework.core.io.DefaultResourceLoader;
+import com.wb.springframework.core.io.ResourceLoader;
 import com.wb.springframework.core.type.classreading.CachingMetadataReaderFactory;
 import com.wb.springframework.core.type.classreading.MetadataReaderFactory;
 
@@ -24,6 +28,10 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
     private final Set<Integer> registriesPostProcessed = new HashSet<>();
 
     private final Set<Integer> factoriesPostProcessed = new HashSet<>();
+
+    private Environment environment;
+
+    private ResourceLoader resourceLoader = new DefaultResourceLoader();
 
 
     @Override
@@ -65,6 +73,40 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
                 configCandidates.add(new BeanDefinitionHolder(beanName, beanDef));
             }
         }
+
+        if (configCandidates.isEmpty()) {
+            return;
+        }
+
+        // TODO: 排序
+        configCandidates.sort((bd1, bd2) -> {
+            return -1;
+        });
+
+        if (this.environment == null) {
+            environment = new StandardEnvironment();
+        }
+
+        ConfigurationClassParser parser = new ConfigurationClassParser(
+                this.metadataReaderFactory, this.environment, this.resourceLoader, registry
+        );
+
+        Set<BeanDefinitionHolder> candidates = new LinkedHashSet<>(configCandidates);
+        Set<ConfigurationClass> alreadyParsed = new HashSet<>(configCandidates.size());
+
+
+        do {
+
+        } while (!candidates.isEmpty());
+
+
+
+
+
+
+
+
+
 
 
 

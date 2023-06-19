@@ -49,7 +49,6 @@ public abstract class ConfigurationClassUtils {
         if (className == null || beanDef.getFactoryMethodName() != null) {
             return false;
         }
-        System.out.println("开发到这里了");
 
         AnnotationMetadata metadata;
         if (beanDef instanceof AnnotatedBeanDefinition &&
