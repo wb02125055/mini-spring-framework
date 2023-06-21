@@ -96,6 +96,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 
 
         do {
+            parser.parse(candidates);
 
         } while (!candidates.isEmpty());
 
