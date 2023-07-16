@@ -11,6 +11,7 @@ import com.wb.springframework.test.beans.config.BeanConfig;
 public class TestMain {
     public static void main(String[] args) {
         ApplicationContext acx = new AnnotationConfigApplicationContext(BeanConfig.class);
+        System.out.println("aaa");
         Object cat = acx.getBean("cat");
         System.out.println("cat: " + cat);
     }

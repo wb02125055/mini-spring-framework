@@ -10,7 +10,19 @@ import java.lang.reflect.InvocationTargetException;
  * @date 2023/5/28 18:16
  */
 public abstract class BeanUtils {
-    public static Object instantiateClass(Constructor<?> ctor, Object... args) throws BeanInstantiationException {
+
+    public static <T> T instantiateClass(Class<T> clazz) throws BeanInstantiationException {
+        if (clazz.isInterface()) {
+            throw new BeanInstantiationException(String.format("Specified class %s is an interface", clazz.getName()));
+        }
+        try {
+            return instantiateClass(clazz.getDeclaredConstructor());
+        } catch (NoSuchMethodException ex) {
+            throw new BeanInstantiationException("No default constructor found.", ex);
+        }
+    }
+
+    public static <T> T instantiateClass(Constructor<T> ctor, Object... args) throws BeanInstantiationException {
         try {
             ReflectionUtils.makeAccessible(ctor);
             return ctor.newInstance(args);

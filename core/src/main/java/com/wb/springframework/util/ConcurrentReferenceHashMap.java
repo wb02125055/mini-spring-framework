@@ -132,7 +132,7 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
 
     @Override
     public V put(K key, V value) {
-        return super.put(key, value);
+        return put(key, value, true);
     }
 
     @Override
@@ -141,15 +141,18 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
     }
 
     private V put(final K key, final V value, final boolean overwriteExisting) {
-        return doTask(key, new Task<V>(TaskOption.RESTRUCTURE_AFTER, TaskOption.SKIP_IF_EMPTY) {
+        return doTask(key, new Task<V>(TaskOption.RESTRUCTURE_AFTER, TaskOption.RESIZE) {
             @Override
-            protected V execute(Reference<K, V> ref, Entry<K, V> entry) {
+            protected V execute(Reference<K, V> ref, Entry<K, V> entry, Entries entries) {
                 if (entry != null) {
-                    if (ref != null) {
-                        ref.release();
+                    V oldValue = entry.getValue();
+                    if(overwriteExisting) {
+                        entry.setValue(value);
                     }
-                    return entry.value;
+                    return oldValue;
                 }
+                Assert.state(null != entries, "No entries segment");
+                entries.add(value);
                 return null;
             }
         });

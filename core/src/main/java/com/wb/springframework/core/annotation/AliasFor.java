@@ -12,4 +12,6 @@ public @interface AliasFor {
 
     @AliasFor("value")
     String attribute() default "";
+
+    Class<? extends Annotation> annotation() default Annotation.class;
 }

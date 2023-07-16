@@ -8,9 +8,13 @@ import com.wb.springframework.beans.factory.support.BeanDefinitionRegistry;
 import com.wb.springframework.beans.factory.support.DefaultListableBeanFactory;
 import com.wb.springframework.beans.factory.support.RootBeanDefinition;
 import com.wb.springframework.context.support.GenericApplicationContext;
+import com.wb.springframework.core.annotation.AnnotationAttributes;
 import com.wb.springframework.core.type.AnnotatedTypeMetadata;
+import com.wb.springframework.core.type.AnnotationMetadata;
 
+import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -39,7 +43,7 @@ public abstract class AnnotationConfigUtils {
     }
 
     private static BeanDefinitionHolder registerPostProcessor(BeanDefinitionRegistry registry,
-                                              RootBeanDefinition definition, String beanName) {
+                                                              RootBeanDefinition definition, String beanName) {
         // 表示这个bean是一个spring内部使用的bean
         definition.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
         // 注册bean定义
@@ -60,4 +64,53 @@ public abstract class AnnotationConfigUtils {
 
     static void processCommonDefinitionAnnotations(AnnotatedBeanDefinition adb, AnnotatedTypeMetadata metadata) {
     }
+
+    public static Set<AnnotationAttributes> attributesForRepeatable(AnnotationMetadata metadata,
+                                                                    Class<?> containerClass,
+                                                                    Class<?> annotationClass) {
+        return attributesForRepeatable(metadata, containerClass.getName(), annotationClass.getName());
+    }
+
+    @SuppressWarnings("unchecked")
+    static Set<AnnotationAttributes> attributesForRepeatable(
+            AnnotationMetadata metadata, String containerClassName, String annotationClassName) {
+        Set<AnnotationAttributes> result = new LinkedHashSet<>();
+
+        // Direct annotation present?
+        addAttributesIfNotNull(result, metadata.getAnnotationAttributes(annotationClassName, false));
+
+        Map<String, Object> container = metadata.getAnnotationAttributes(containerClassName, false);
+        if (container != null && container.containsKey("value")) {
+            for (Map<String, Object> containedAttributes : (Map<String, Object>[]) container.get("value")) {
+                addAttributesIfNotNull(result, containedAttributes);
+            }
+        }
+
+        // Return merged result
+        return Collections.unmodifiableSet(result);
+    }
+
+    private static void addAttributesIfNotNull(
+            Set<AnnotationAttributes> result, Map<String, Object> attributes
+    ) {
+        if (null != attributes) {
+            result.add(AnnotationAttributes.fromMap(attributes));
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

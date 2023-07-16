@@ -3,6 +3,7 @@ package com.wb.springframework.core.type;
 import com.wb.springframework.core.annotation.AnnotatedElementUtils;
 
 import java.lang.annotation.Annotation;
+import java.util.Map;
 
 /**
  * @author WangBing
@@ -28,4 +29,30 @@ public class StandardAnnotationMetadata extends StandardClassMetadata implements
         return this.annotations.length > 0 &&
                 AnnotatedElementUtils.isAnnotated(getIntrospectedClass(), annotationName);
     }
+
+    @Override
+    public Map<String, Object> getAnnotationAttributes(String annotationName, boolean classValuesAsString) {
+        return this.annotations.length > 0 ? AnnotatedElementUtils.getMergedAnnotationAttributes(
+                getIntrospectedClass(), annotationName, classValuesAsString, this.nestedAnnotationsAsMap
+        ) : null;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

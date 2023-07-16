@@ -19,6 +19,8 @@ public abstract class ClassUtils {
 
     private static final char PACKAGE_SEPARATOR = '.';
 
+    private static final char PATH_SEPARATOR = '/';
+
     public static final String CGLIB_CLASS_SEPARATOR = "$$";
 
     private static final char INNER_CLASS_SEPARATOR = '$';
@@ -53,6 +55,11 @@ public abstract class ClassUtils {
         for (Class<?> clazz : commonClasses) {
             commonClassCache.put(clazz.getName(), clazz);
         }
+    }
+
+    public static String getPackageName(String fqClassName) {
+        int lastDotIndex = fqClassName.lastIndexOf(PACKAGE_SEPARATOR);
+        return lastDotIndex != -1 ? fqClassName.substring(0, lastDotIndex) : "";
     }
 
     public static String getShortName(String beanClassName) {
@@ -176,5 +183,9 @@ public abstract class ClassUtils {
             }
         }
         return clazz;
+    }
+
+    public static String convertClassNameToResourcePath(String className) {
+        return className.replace(PACKAGE_SEPARATOR, PATH_SEPARATOR);
     }
 }

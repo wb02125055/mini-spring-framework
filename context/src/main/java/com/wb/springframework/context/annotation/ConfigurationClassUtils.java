@@ -88,6 +88,10 @@ public abstract class ConfigurationClassUtils {
         return null;
     }
 
+    public static boolean isConfigurationCandidate(AnnotationMetadata metadata) {
+        return isFullConfigurationCandidate(metadata) || isLiteConfigurationCandidate(metadata);
+    }
+
     public static boolean isLiteConfigurationCandidate(AnnotationMetadata metadata) {
         // 如果当前的bean定义对应的class是一个接口，则不是配置类
         if (metadata.isInterface()) {

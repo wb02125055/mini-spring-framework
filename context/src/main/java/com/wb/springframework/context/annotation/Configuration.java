@@ -1,5 +1,6 @@
 package com.wb.springframework.context.annotation;
 
+import com.wb.springframework.core.annotation.AliasFor;
 import com.wb.springframework.stereotype.Component;
 
 import java.lang.annotation.*;
@@ -12,4 +13,7 @@ import java.lang.annotation.*;
 @Documented
 @Component
 public @interface Configuration {
+
+    @AliasFor(annotation = Component.class)
+    String value() default "";
 }

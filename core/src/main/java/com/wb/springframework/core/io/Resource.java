@@ -6,4 +6,9 @@ package com.wb.springframework.core.io;
  */
 public interface Resource extends InputStreamSource {
 
+    boolean exists();
+
+    default boolean isReadable() {
+        return exists();
+    }
 }

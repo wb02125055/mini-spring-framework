@@ -1,5 +1,7 @@
 package com.wb.springframework.core.type;
 
+import java.util.Map;
+
 /**
  * @author WangBing
  * @date 2023/5/21 17:05
@@ -11,4 +13,7 @@ public interface AnnotatedTypeMetadata {
      * @return 是否被标注了
      */
     boolean isAnnotated(String annotationName);
+
+    Map<String, Object> getAnnotationAttributes(String annotationName, boolean classValuesAsString);
+
 }

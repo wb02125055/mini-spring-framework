@@ -12,4 +12,10 @@ public interface ClassMetadata {
      * @return 是否为接口
      */
     boolean isInterface();
+
+    /**
+     *
+     * @return
+     */
+    String[] getMemberClassNames();
 }

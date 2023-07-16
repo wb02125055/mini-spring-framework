@@ -8,5 +8,7 @@ import com.wb.springframework.beans.BeansException;
  */
 public interface ConfigurableApplicationContext extends ApplicationContext {
 
+    String CONFIG_LOCATION_DELIMITERS = ",; \t\n";
+
     void refresh() throws BeansException, IllegalStateException;
 }

@@ -6,6 +6,7 @@ import com.wb.springframework.beans.factory.config.BeanDefinitionHolder;
 import com.wb.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import com.wb.springframework.beans.factory.support.BeanDefinitionRegistry;
 import com.wb.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
+import com.wb.springframework.beans.factory.support.BeanNameGenerator;
 import com.wb.springframework.core.Ordered;
 import com.wb.springframework.core.PriorityOrdered;
 import com.wb.springframework.core.env.Environment;
@@ -32,6 +33,8 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
     private Environment environment;
 
     private ResourceLoader resourceLoader = new DefaultResourceLoader();
+
+    private BeanNameGenerator componentScanBeanNameGenerator = new AnnotationBeanNameGenerator();
 
 
     @Override
@@ -88,7 +91,8 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
         }
 
         ConfigurationClassParser parser = new ConfigurationClassParser(
-                this.metadataReaderFactory, this.environment, this.resourceLoader, registry
+                this.metadataReaderFactory, this.environment, this.resourceLoader,
+                this.componentScanBeanNameGenerator, registry
         );
 
         Set<BeanDefinitionHolder> candidates = new LinkedHashSet<>(configCandidates);
@@ -99,19 +103,6 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
             parser.parse(candidates);
 
         } while (!candidates.isEmpty());
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     }
