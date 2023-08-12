@@ -3,11 +3,16 @@ package com.wb.springframework.context.annotation;
 import com.wb.springframework.beans.factory.config.BeanDefinition;
 import com.wb.springframework.context.ResourceLoaderAware;
 import com.wb.springframework.context.index.CandidateComponentsIndex;
+import com.wb.springframework.context.index.CandidateComponentsIndexLoader;
 import com.wb.springframework.core.annotation.AnnotationUtils;
 import com.wb.springframework.core.io.Resource;
 import com.wb.springframework.core.io.ResourceLoader;
 import com.wb.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import com.wb.springframework.core.io.support.ResourcePatternResolver;
+import com.wb.springframework.core.io.support.ResourcePatternUtils;
+import com.wb.springframework.core.type.classreading.CachingMetadataReaderFactory;
+import com.wb.springframework.core.type.classreading.MetadataReader;
+import com.wb.springframework.core.type.classreading.MetadataReaderFactory;
 import com.wb.springframework.core.type.filter.AnnotationTypeFilter;
 import com.wb.springframework.core.type.filter.AssignableTypeFilter;
 import com.wb.springframework.core.type.filter.TypeFilter;
@@ -37,11 +42,17 @@ public class ClassPathScanningCandidateComponentProvider implements ResourceLoad
 
     private ResourcePatternResolver resourcePatternResolver;
 
+    private MetadataReaderFactory metadataReaderFactory;
+
     protected ClassPathScanningCandidateComponentProvider() {}
 
     @Override
     public void setResourceLoader(ResourceLoader resourceLoader) {
+        this.resourcePatternResolver = ResourcePatternUtils.getResourcePatternResolver(resourceLoader);
 
+        this.metadataReaderFactory = new CachingMetadataReaderFactory(resourceLoader);
+
+        this.componentsIndex = CandidateComponentsIndexLoader.loadIndex(this.resourcePatternResolver.getClassLoader());
     }
 
     protected void registerDefaultFilters() {
@@ -67,14 +78,26 @@ public class ClassPathScanningCandidateComponentProvider implements ResourceLoad
             Resource[] resources = getResourcePatternResolver().getResources(packageSearchPath);
             for (Resource resource : resources) {
                 if (resource.isReadable()) {
+                    try {
+                        MetadataReader metadataReader = getMetadataReaderFactory().getMetadataReader(resource);
 
+                    } catch (Throwable e) {
+
+                    }
                 }
             }
 
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
         return candidates;
+    }
+
+    public final MetadataReaderFactory getMetadataReaderFactory() {
+        if (this.metadataReaderFactory == null) {
+            this.metadataReaderFactory = new CachingMetadataReaderFactory();
+        }
+        return this.metadataReaderFactory;
     }
 
     private ResourcePatternResolver getResourcePatternResolver() {

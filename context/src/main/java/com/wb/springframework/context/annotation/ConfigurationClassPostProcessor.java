@@ -99,10 +99,11 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
         Set<ConfigurationClass> alreadyParsed = new HashSet<>(configCandidates.size());
 
 
-        do {
+//        do {
+        System.out.println("去掉了while循环，记得加回来...");
             parser.parse(candidates);
 
-        } while (!candidates.isEmpty());
+//        } while (!candidates.isEmpty());
 
 
     }

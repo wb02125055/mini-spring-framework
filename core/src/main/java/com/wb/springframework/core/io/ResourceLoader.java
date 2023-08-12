@@ -7,4 +7,6 @@ package com.wb.springframework.core.io;
 public interface ResourceLoader {
 
     ClassLoader getClassLoader();
+
+    Resource getResource(String location);
 }

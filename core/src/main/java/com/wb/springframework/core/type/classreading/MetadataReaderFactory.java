@@ -1,5 +1,7 @@
 package com.wb.springframework.core.type.classreading;
 
+import com.wb.springframework.core.io.Resource;
+
 import java.io.IOException;
 
 /**
@@ -9,5 +11,7 @@ import java.io.IOException;
 public interface MetadataReaderFactory {
 
     MetadataReader getMetadataReader(String className) throws IOException;
+
+    MetadataReader getMetadataReader(Resource resource) throws IOException;
 
 }

@@ -1,5 +1,6 @@
 package com.wb.springframework.context.annotation;
 
+import com.wb.springframework.beans.factory.support.BeanNameGenerator;
 import com.wb.springframework.core.annotation.AliasFor;
 
 import java.lang.annotation.*;
@@ -16,4 +17,9 @@ public @interface ComponentScan {
     String[] basePackages() default {};
 
     boolean useDefaultFilters() default true;
+
+
+    Class<? extends BeanNameGenerator> nameGenerator() default BeanNameGenerator.class;
+
+
 }
